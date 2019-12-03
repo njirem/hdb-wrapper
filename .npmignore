@@ -1,0 +1,9 @@
+src
+.vscode
+.gitignore
+.travis.yml
+coverage
+tslint.json
+jest.config.js
+test-setup.js
+tsconfig.json

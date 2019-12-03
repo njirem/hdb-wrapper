@@ -1,0 +1,44 @@
+{
+    "name": "@webscaledev/hdb-wrapper",
+    "version": "1.0.0",
+    "publishConfig": {
+        "access": "public"
+    },
+    "description": "A couple of utilities to make ExpressJS life easier",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "test": "jest --ci",
+        "test:watch": "jest --watch",
+        "clean": "rm -rf dist",
+        "build": "npm run clean && tsc",
+        "ci": "npm run build && npm run test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/njirem/hdb-wrapper.git"
+    },
+    "keywords": [
+        "expressjs",
+        "error"
+    ],
+    "author": "Merijn",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/njirem/hdb-wrapper/issues"
+    },
+    "homepage": "https://github.com/njirem/hdb-wrapper#readme",
+    "dependencies": {
+        "@types/node": "^12.12.14",
+        "tslib": "^1.10.0"
+    },
+    "devDependencies": {
+        "@types/jest": "^24.0.23",
+        "@types/luxon": "^1.21.0",
+        "jest": "^24.9.0",
+        "luxon": "^1.21.3",
+        "ts-jest": "^24.2.0",
+        "tslint": "^5.20.1",
+        "typescript": "^3.7.2"
+    }
+}

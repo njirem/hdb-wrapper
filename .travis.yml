@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+- '12'
+- '10'
+- '8'
+script: npm run ci
+cache: npm
+deploy:
+  edge: true
+  provider: npm
+  email: njirem@gmail.com
+  tag: latest
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true
+    node: 10
+  api_key:
+    secure: aeolrG4h9usht1jjhyZ9mX/DLcSYFf6DiQaYJVrcAr9qr+UVZE3+miyHaZLTRpg51qRWrUPglZZ4Jft7XPoITmBZP+7kJ5802X/vJ0z8Ulm5TKenncUv79NhGQ7dDeZXyoXzwAMm/fcTFwsheJVpnraF/28NYtWRVsVmKM/FARuU+L7dfXGNYfWfxxwTVdtghVF46OZt3Gn+dN2XOVAPvb7teLhQq04BEbiJK4S1G5V7RIdTi6atKWcpa4I+WDhO5PaycQuK1lKF9C0WzJc5J0D4OKKwC0zbWqLoPPqiCAh+r8c6kptvQYjQCsWnFzSrmodHDs+FhSpT3SPRQnpqc5a7EZ6MGtWxzHQZuA5zbAED9z5ZXwNSV+yjqAdGkHSzFfbYDd/uWHtcn/TirHgierJWVBieIDkDLx7PSlUrs3FodnPYKUWeM3zNiT1ertzoEn9dR0dWnKBRH/J7pcD56X6/SNMV/hb7gxOsBxVuK3epXBzVbg2TMx2Edp/hS3BlTI43hwrBqhe+oHZhe2GzsIlYlZL/RsOwbZdaquq4wnPJcmCvpkntDVau8gJ6E36agiJbJuuvQk5CuUWJnfACT7mhbFkGZuhMm1mZq/EtLqOyIkRiLIqaphHnDQ/ItyL/wzgicjhzzhiSIDT+TlywHjtMwvAHPA511j7U1XJJGjg=
