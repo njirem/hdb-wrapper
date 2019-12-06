@@ -1,4 +1,4 @@
-import { generateWhere } from "./where";
+import { generateWhere } from './where';
 
 describe(generateWhere, () => {
     it('should return nothing if there is no input', () => {
@@ -50,7 +50,7 @@ describe(generateWhere, () => {
     it('should be able to use complex column keys', () => {
         const single = generateWhere({
             '"SOME_TABLE"."ID"': 3,
-            ID: {
+            "ID": {
                 table: 'OTHER_TABLE',
                 value: 4,
             }
@@ -60,7 +60,7 @@ describe(generateWhere, () => {
 
         const multiple = generateWhere({
             '"SOME_TABLE"."ID"': [3, 4, 5],
-            ID: {
+            "ID": {
                 table: 'OTHER_TABLE',
                 values: [6, 7, 8],
             }
@@ -76,5 +76,9 @@ describe(generateWhere, () => {
         });
         expect(query).toBe(` WHERE "prop" IS NULL AND "other_prop" IS NOT NULL`);
         expect(values).toEqual([]);
+
+        expect(() => generateWhere({
+            prop: { comparator: '>', value: null }
+        })).toThrow(`Cannot compare to NULL with '>'`);
     });
 });
