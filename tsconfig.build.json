@@ -2,6 +2,7 @@
     "extends": "./tsconfig.json",
     "exclude": [
         "hdbext.d.ts",
+        "dist",
         "**/*.spec.ts"
     ]
 }
