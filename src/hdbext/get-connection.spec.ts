@@ -1,8 +1,3 @@
-import { DbWrapper } from '../wrapper';
-import { getConnection, withDb } from './get-connection';
-
-// tslint:disable-next-line: no-var-requires
-const hdbext = require('@sap/hdbext');
 jest.mock('@sap/hdbext', () => {
     const connection = { connected: true, close: jest.fn() };
     const pool = { acquire: jest.fn().mockImplementation((_options, cb) => cb(null, connection)) };
@@ -13,6 +8,12 @@ jest.mock('@sap/hdbext', () => {
         connection,
     };
 }, { virtual: true });
+
+import { DbWrapper } from '../wrapper';
+import { getConnection, withDb } from './get-connection';
+
+// tslint:disable-next-line: no-var-requires
+const hdbext = require('@sap/hdbext');
 
 describe(getConnection, () => {
     const options = {} as any;
