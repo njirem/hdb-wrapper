@@ -1,14 +1,17 @@
-import { OrderBy, Where } from 'query-parts';
 import { promisify } from 'util';
 import * as queries from './query';
 import { SelectOptions } from './query';
+import { OrderBy, Where } from './query-parts';
 import { MapWithDefault } from './utils';
 
 export class DbWrapper {
-    private pendingChanges: Array<{ change: string; table: string; }> = [];
+    /** @internal */
+    private readonly pendingChanges: Array<{ change: string; table: string; }> = [];
+    /** @internal */
+    private readonly client: import('hdb').Connection;
+    constructor(client: import('hdb').Connection) { this.client = client; }
 
-    constructor(private readonly client: import('hdb').Connection) { }
-
+    /** @internal */
     private _timestamp?: string;
     get timestamp() { return this._timestamp || (this._timestamp = new Date().toISOString()); }
 
@@ -34,7 +37,7 @@ export class DbWrapper {
         this.pendingChanges.length = 0;
     }
 
-    async select<T>(tableName: string, options: SelectOptions = {}) {
+    async select<T extends {} = DbWrapper.BaseEntity>(tableName: string, options: SelectOptions = {}) {
         const { query, values } = queries.select(tableName, options);
 
         return this.execute<T[]>(query, values)
@@ -50,7 +53,7 @@ export class DbWrapper {
      *               The objects need to all have the same keys!!
      * @param uniqueProps - If given, will query the newly created rows by this unique prop
      */
-    async insert<T extends import('hdb').Data>(tableName: string, datas: T | T[], ...uniqueProps: Array<keyof T & string>) {
+    async insert<T extends import('hdb').Data, PK = DbWrapper.BaseEntity>(tableName: string, datas: T | T[], ...uniqueProps: Array<keyof T & string>) {
         if (!Array.isArray(datas)) { datas = [datas]; }
         if (!datas.length) { return []; }
 
@@ -67,7 +70,7 @@ export class DbWrapper {
         const orderBy: OrderBy = [{ column: await this.primaryKeyCache.get(tableName), direction: 'DESC' }];
         const where: Where = {};
         for (const prop of uniqueProps) { where[prop] = datas.map(data => data[prop]).filter(p => p !== undefined); }
-        const out = await this.select(tableName, { where, orderBy, limit: datas.length });
+        const out = await this.select(tableName, { where, orderBy, limit: datas.length }) as Array<T & PK>;
         // Reverse the array, to make sure the elements are in insertion order
         return out.reverse();
     }
@@ -122,11 +125,13 @@ export class DbWrapper {
         }
     }
 
+    /** @internal */
     private async prepare(sql: string) {
         const stmt = await promisify(this.client.prepare).call(this.client, sql);
         return stmt;
     }
 
+    /** @internal */
     private readonly primaryKeyCache = new MapWithDefault(async (tableName: string) => {
         tableName = escapeSingleQuotes(tableName);
         const sql = `SELECT "COLUMN_NAME" FROM "SYS"."TABLE_COLUMNS" WHERE "TABLE_NAME" = '${tableName}' AND "IS_NULLABLE" = 'FALSE' AND "INDEX_TYPE" = 'FULL'`;
@@ -143,3 +148,9 @@ function escapeSingleQuotes(value: string) {
     return value.replace(/'/g, `''`);
 }
 
+declare global {
+    namespace DbWrapper {
+        /** Extendable interface to indicate the properties that every database entity should have (will probably be something like { id: number }); */
+        export interface BaseEntity { }
+    }
+}

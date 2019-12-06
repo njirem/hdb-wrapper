@@ -10,8 +10,10 @@ export function dbWrapperMiddleware(req: import('express').Request, _res: import
     next();
 }
 
-declare module 'express' {
-    export interface Request {
-        wrappedDb: DbWrapper;
+declare global {
+    namespace Express {
+        export interface Request {
+            wrappedDb: DbWrapper;
+        }
     }
 }

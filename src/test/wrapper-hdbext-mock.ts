@@ -1,4 +1,4 @@
-import { DbWrapper } from 'wrapper';
+import { DbWrapper } from '../wrapper';
 import { mockDb } from './mock-db';
 
 type Public<T> = Pick<T, keyof T>;

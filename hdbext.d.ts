@@ -1,1 +1,1 @@
-export * from './src/hdbext';
+export * from './dist/hdbext';

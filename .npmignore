@@ -1,6 +1,7 @@
 .vscode
 .gitignore
 .travis.yml
+src
 coverage
 tslint.json
 jest.config.js

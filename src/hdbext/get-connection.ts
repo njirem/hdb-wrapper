@@ -10,7 +10,7 @@ export function getConnection(options: import('hdb').ConnectionOptions, fromPool
     return promisify(createConnection)(options);
 }
 
-export async function withDb<T = unknown>(options: import('hdb').ConnectionOptions, fn: (db: DbWrapper) => Promise<T>, pool = false) {
+export async function withDb<T = unknown>(options: import('hdb').ConnectionOptions, fn: (db: DbWrapper) => T | Promise<T>, pool = false) {
     const connection = await getConnection(options, pool);
     try {
         const db = new DbWrapper(connection);
