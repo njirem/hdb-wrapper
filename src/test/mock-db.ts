@@ -1,4 +1,3 @@
-import { Data, Primitive } from 'db-client-interfaces';
 import { DateTime } from 'luxon';
 import { SelectOptions } from '../query';
 import { AliasableColumn, Column, OnEquals, OrderBy, SupportedJoins, ValueComparator, Where } from '../query-parts';
@@ -8,7 +7,7 @@ type Public<T> = Pick<T, keyof T>;
 
 class MockDbWrapper implements Public<DbWrapper> {
     private id = 10000000;
-    private readonly tables = new Map<string, Data[]>();
+    private readonly tables = new Map<string, Array<import('hdb').Data>>();
 
     /** For testing, reset all tables */
     reset() {
@@ -16,14 +15,14 @@ class MockDbWrapper implements Public<DbWrapper> {
         this.tables.clear();
     }
     /** For testing, return the full table */
-    getTable<T extends Data>(tableName: string) {
+    getTable<T extends import('hdb').Data>(tableName: string) {
         if (!this.tables.has(tableName)) {
             this.tables.set(tableName, []);
         }
         return this.tables.get(tableName)! as T[];
     }
 
-    private getTableInternal<T extends Data>(tableName: string): InternalDataRow[] {
+    private getTableInternal<T extends import('hdb').Data>(tableName: string): InternalDataRow[] {
         return this.getTable<T>(tableName).map(data => [{ tableName, data }]);
     }
 
@@ -32,7 +31,8 @@ class MockDbWrapper implements Public<DbWrapper> {
         return this._timestamp || (this._timestamp = DateTime.utc().toISO());
     }
 
-    readonly select = jest.fn(async <T extends Data = { ID: string | number }>(tableName: string, { where, orderBy, limit, columns, join }: SelectOptions = {}) => {
+    readonly select = jest.fn(async <T extends import('hdb').Data = { ID: string | number }>
+        (tableName: string, { where, orderBy, limit, columns, join }: SelectOptions = {}) => {
         let selected = this.getTableInternal(tableName);
         if (join) {
             join = Array.isArray(join) ? join : [join];
@@ -48,7 +48,7 @@ class MockDbWrapper implements Public<DbWrapper> {
         return out as T[];
     }) as jest.Mock & DbWrapper['select'];
 
-    readonly insert = jest.fn(async <T extends Data, PK = { ID: string | number }>(tableName: string, data: T | T[]) => {
+    readonly insert = jest.fn(async <T extends import('hdb').Data, PK = { ID: string | number }>(tableName: string, data: T | T[]) => {
         if (!Array.isArray(data)) { data = [data]; }
         const dataToInsert = data.map(d => ({ ...d, ID: this.id++ }));
         this.getTable<T>(tableName).push(...dataToInsert);
@@ -60,7 +60,7 @@ class MockDbWrapper implements Public<DbWrapper> {
         this.tables.set(tableName, filteredTable);
     });
 
-    readonly update = jest.fn(async (tableName: string, where: Where, data: Data) => {
+    readonly update = jest.fn(async (tableName: string, where: Where, data: import('hdb').Data) => {
         const toUpdate = this.getTable(tableName).filter(whereFilter(where, { assert: true }));
         const dataEntries = Object.entries(data).filter(([_, value]) => value !== undefined);
         for (const item of toUpdate) {
@@ -82,14 +82,14 @@ export const mockDb = new MockDbWrapper;
 beforeEach(() => mockDb.reset());
 
 interface InternalDataRowForTable {
-    data: Data;
+    data: import('hdb').Data;
     tableName: string;
 }
 type InternalDataRow = InternalDataRowForTable[];
 
-function joinTables(datas: InternalDataRow[], tableName: string, newDatas: Data[], onEqual: OnEquals, type: SupportedJoins): InternalDataRow[] {
+function joinTables(datas: InternalDataRow[], tableName: string, newDatas: Array<import('hdb').Data>, onEqual: OnEquals, type: SupportedJoins): InternalDataRow[] {
     const entries = Object.entries(onEqual);
-    function findComparableRow(oldDataRow: InternalDataRow, newDataRow: Data) {
+    function findComparableRow(oldDataRow: InternalDataRow, newDataRow: import('hdb').Data) {
         return entries.every(([newDataKey, dataCol]) => newDataRow[newDataKey] == getColumn(oldDataRow, dataCol));
     }
 
@@ -132,7 +132,7 @@ function getColumn(datas: InternalDataRow, column: Column) {
 
 function columnsMapper(columns?: AliasableColumn[]) {
     return (row: InternalDataRow) => {
-        const out = {} as Data;
+        const out = {} as import('hdb').Data;
         if (columns) {
             for (const col of columns) {
                 const key = typeof col === 'object' ? col.alias ? col.alias : col.name : col;
@@ -160,7 +160,7 @@ function sortBy(orderBy: OrderBy) {
         return 0;
     };
 }
-function prepareCompare(value: Primitive | undefined) {
+function prepareCompare(value: import('hdb').Primitive | undefined) {
     if (typeof value === 'string' && /^[0-9]+$/.test(value)) { return parseInt(value, 10); }
     return value == null ? -Infinity : value;
 }
@@ -168,7 +168,7 @@ function prepareCompare(value: Primitive | undefined) {
 function whereFilter(where: Where, { invert = false, assert = false }: { invert?: boolean; assert?: boolean; } = {}) {
     const whereEntries = Object.entries(where).filter(([, value]) => value !== undefined);
     if (assert && !whereEntries.length) { throw new Error('Need a valid where clause!'); }
-    return (item: InternalDataRow | Data) => {
+    return (item: InternalDataRow | import('hdb').Data) => {
         const selected = whereEntries
             .every(([key, whereValue]) => {
                 const column = whereValue && typeof whereValue === 'object' && 'table' in whereValue ? { name: key, table: whereValue.table } : key;
@@ -184,7 +184,7 @@ function whereFilter(where: Where, { invert = false, assert = false }: { invert?
     };
 }
 
-function valueComparator(a: Primitive, b: Primitive, comparator: ValueComparator = '=') {
+function valueComparator(a: import('hdb').Primitive, b: import('hdb').Primitive, comparator: ValueComparator = '=') {
     a = prepareCompare(a);
     b = prepareCompare(b);
     switch (comparator) {

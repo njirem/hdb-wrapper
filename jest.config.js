@@ -5,6 +5,7 @@ module.exports = {
     restoreMocks: true,
     collectCoverage: true,
     collectCoverageFrom: ['src/**'],
+    coveragePathIgnorePatterns: ['src/test'],
     coverageDirectory: 'coverage',
     coverageReporters: [
         'html',

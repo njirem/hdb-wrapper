@@ -1,4 +1,4 @@
-import { Connection, Primitive } from 'db-client-interfaces';
+import { Connection, Primitive } from 'hdb';
 import { DbWrapper } from './wrapper';
 
 describe(DbWrapper, () => {

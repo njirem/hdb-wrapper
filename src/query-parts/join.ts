@@ -1,4 +1,3 @@
-'use strict';
 import { Column, generateColumn } from './column';
 import { quote } from './utils';
 

@@ -1,4 +1,3 @@
-import { Primitive } from '../db-client-interfaces';
 import { Column, generateColumn } from './column';
 import { replace } from './utils';
 
@@ -60,21 +59,21 @@ function addNullPart(context: Context, key: Column, comparator: ValueComparator)
 
 interface Context {
     parts: string[];
-    values: Primitive[];
+    values: Array<import('hdb').Primitive>;
 }
 export type ValueComparator = '=' | '!=' | '<>' | '<' | '>' | '>=' | '<=';
 interface WhereValueOption {
-    value: Primitive;
+    value: import('hdb').Primitive;
     comparator?: ValueComparator;
     table?: string;
 }
-type WhereValue = WhereValueOption | Primitive;
+type WhereValue = WhereValueOption | import('hdb').Primitive;
 interface WhereArrayOption {
-    values: Primitive[];
+    values: Array<import('hdb').Primitive>;
     presence?: 'IN' | 'NOT IN';
     table?: string;
 }
-type WhereArray = WhereArrayOption | Primitive[];
+type WhereArray = WhereArrayOption | Array<import('hdb').Primitive>;
 export interface Where {
     [column: string]: WhereValue | WhereArray | undefined;
 }

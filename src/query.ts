@@ -1,4 +1,3 @@
-import { Data } from 'db-client-interfaces';
 import {
     AliasableColumn, generateJoins, generateOrderBy, generateSelectColumns, generateWhere, Join, OrderBy, quote, replace, Where,
 } from './query-parts';
@@ -15,7 +14,7 @@ export function select(tableName: string, options: SelectOptions) {
     return { query, values };
 }
 
-export function insert<T extends Data>(tableName: string, datas: T[]) {
+export function insert<T extends import('hdb').Data>(tableName: string, datas: T[]) {
     const columns = Array.from(datas.reduce((set, data) => {
         Object.keys(data).forEach(key => set.add(key));
         return set;
@@ -27,7 +26,7 @@ export function insert<T extends Data>(tableName: string, datas: T[]) {
     };
 }
 
-export function update(tableName: string, where: Where, data: Data) {
+export function update(tableName: string, where: Where, data: import('hdb').Data) {
     const entries = Object.entries(data).filter(([_, value]) => value !== undefined);
     if (!entries.length) { return {}; }
     const dataKeys = entries.map(([key]) => `${quote(key)} = ?`);
