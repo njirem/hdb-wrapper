@@ -3,6 +3,7 @@
 module.exports = {
     clearMocks: true,
     restoreMocks: true,
+    roots: ['src'],
     collectCoverage: true,
     collectCoverageFrom: ['src/**'],
     coveragePathIgnorePatterns: ['src/test'],
