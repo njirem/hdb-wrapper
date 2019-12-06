@@ -31,7 +31,7 @@ class MockDbWrapper implements Public<DbWrapper> {
         return this._timestamp || (this._timestamp = DateTime.utc().toISO());
     }
 
-    readonly select = jest.fn(async <T extends import('hdb').Data = { ID: string | number }>
+    readonly select = jest.fn(async <T extends {} = DbWrapper.BaseEntity>
         (tableName: string, { where, orderBy, limit, columns, join }: SelectOptions = {}) => {
         let selected = this.getTableInternal(tableName);
         if (join) {
@@ -48,7 +48,7 @@ class MockDbWrapper implements Public<DbWrapper> {
         return out as T[];
     }) as jest.Mock & DbWrapper['select'];
 
-    readonly insert = jest.fn(async <T extends import('hdb').Data, PK = { ID: string | number }>(tableName: string, data: T | T[]) => {
+    readonly insert = jest.fn(async <T extends import('hdb').Data, PK = DbWrapper.BaseEntity>(tableName: string, data: T | T[]) => {
         if (!Array.isArray(data)) { data = [data]; }
         const dataToInsert = data.map(d => ({ ...d, ID: this.id++ }));
         this.getTable<T>(tableName).push(...dataToInsert);
