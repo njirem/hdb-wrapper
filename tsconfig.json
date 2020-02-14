@@ -16,7 +16,7 @@
         "stripInternal": true,
         "baseUrl": "src",
         "rootDir": "src",
-        "outDir": "dist",
+        "outDir": "dist"
     },
     "exclude": [
         "hdbext.d.ts",

@@ -86,11 +86,10 @@ export class DbWrapper {
         // Nothing to update!
         if (!query) { return; }
 
-        /** @type {number} */
         const affected = await this.execute(query, values)
             .catch(e => {
                 throw new Error(`Unexpected error Updating in '${tableName}'\n${e}`);
-            });
+            }) as number;
         this.pendingChanges.push({ change: 'update', table: tableName });
         return affected;
     }
