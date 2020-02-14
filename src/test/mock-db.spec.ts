@@ -172,6 +172,13 @@ describe('mockDb', () => {
                 })
             );
         });
+
+        it('should return the number of updated entries', async () => {
+            await expect(mockDb.update(myTable, { firstName: 'Piet' }, { lastName: 'Klaassen' })).resolves.toBe(1);
+            await expect(mockDb.update(myTable, { firstName: ['Piet', 'John'] }, { lastName: 'Klaassen' })).resolves.toBe(2);
+            await expect(mockDb.update(myTable, { firstName: 'Pieter' }, { lastName: 'Klaassen' })).resolves.toBe(0);
+            await expect(mockDb.update(myTable, { firstName: ['Pieter', 'Piet'] }, { lastName: 'Klaassen' })).resolves.toBe(1);
+        });
     });
 
     describe(mockDb.select, () => {

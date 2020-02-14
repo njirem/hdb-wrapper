@@ -84,7 +84,7 @@ export class DbWrapper {
     async update(tableName: string, where: Where, data: import('hdb').Data) {
         const { query, values } = queries.update(tableName, where, data);
         // Nothing to update!
-        if (!query) { return; }
+        if (!query) { return 0; }
 
         const affected = await this.execute(query, values)
             .catch(e => {
