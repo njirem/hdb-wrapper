@@ -31,11 +31,6 @@ declare module '@sap/hdbext' {
     /** Create a Database Connection */
     export function createConnection(options: import('hdb').ConnectionOptions, callback: import('hdb').Callback<import('hdb').Connection>): void;
 
-    /** Create a new database ConnectionPool for the given hana service/connectionOptions */
-    export function createPool(options: import('hdb').ConnectionOptions, poolOptions?: PoolOptions): ConnectionPool;
-    /** Get an existing or create a new database ConnectionPool for the given hana service/connectionOptions */
-    export function getPool(options: import('hdb').ConnectionOptions, poolOptions?: PoolOptions): ConnectionPool;
-
     /** Adds a middleware Handler to express that gets a HDB Client from a pool and adds it to every request at `req.db` */
     export function middleware(options: import('hdb').ConnectionOptions, poolOptions?: PoolOptions): import('express').Handler;
 }

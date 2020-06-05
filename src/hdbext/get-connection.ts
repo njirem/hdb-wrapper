@@ -1,17 +1,13 @@
-import { createConnection, getPool } from '@sap/hdbext';
+import { createConnection } from '@sap/hdbext';
 import { promisify } from 'util';
 import { DbWrapper } from '../wrapper';
 
-export function getConnection(options: import('hdb').ConnectionOptions, fromPool?: boolean) {
-    if (fromPool) {
-        const pool = getPool(options);
-        return promisify(pool.acquire).call(pool, {});
-    }
+export function getConnection(options: import('hdb').ConnectionOptions) {
     return promisify(createConnection)(options);
 }
 
-export async function withDb<T = unknown>(options: import('hdb').ConnectionOptions, fn: (db: DbWrapper) => T | Promise<T>, pool = false) {
-    const connection = await getConnection(options, pool);
+export async function withDb<T = unknown>(options: import('hdb').ConnectionOptions, fn: (db: DbWrapper) => T | Promise<T>) {
+    const connection = await getConnection(options);
     try {
         const db = new DbWrapper(connection);
         return await fn(db);

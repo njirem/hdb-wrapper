@@ -1,10 +1,7 @@
 jest.mock('@sap/hdbext', () => {
     const connection = { connected: true, close: jest.fn() };
-    const pool = { acquire: jest.fn().mockImplementation((_options, cb) => cb(null, connection)) };
     return {
         createConnection: jest.fn().mockImplementation((_options, cb) => cb(null, connection)),
-        getPool: jest.fn().mockReturnValue(pool),
-        pool,
         connection,
     };
 }, { virtual: true });
@@ -20,15 +17,7 @@ describe(getConnection, () => {
 
     it('should get the connection with the given options', async () => {
         await expect(getConnection(options)).resolves.toBe(hdbext.connection);
-        expect(hdbext.getPool).not.toHaveBeenCalled();
         expect(hdbext.createConnection).toHaveBeenCalledWith(options, expect.anything());
-    });
-
-    it('should be able to get the connection from a pool', async () => {
-        await expect(getConnection(options, true)).resolves.toBe(hdbext.connection);
-        expect(hdbext.createConnection).not.toHaveBeenCalled();
-        expect(hdbext.getPool).toHaveBeenCalledWith(options);
-        expect(hdbext.pool.acquire).toHaveBeenCalled();
     });
 });
 
@@ -43,8 +32,7 @@ describe(withDb, () => {
     });
 
     it('should be able to get the underlying connection from a pool', async () => {
-        await withDb(options, fn, true);
-        expect(hdbext.getPool).toHaveBeenCalled();
+        await withDb(options, fn);
         expect(fn).toHaveBeenCalledWith(expect.any(DbWrapper));
     });
 

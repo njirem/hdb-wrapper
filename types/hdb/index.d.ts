@@ -15,6 +15,7 @@ declare module 'hdb' {
         schema?: string;
         databaseName?: string;
         autoCommit?: boolean;
+        pooling?: boolean;
     }
 
     interface Statement {
