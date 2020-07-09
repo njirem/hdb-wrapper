@@ -1,6 +1,6 @@
 {
     "name": "@webscaledev/hdb-wrapper",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "publishConfig": {
         "access": "public"
     },
@@ -43,6 +43,6 @@
         "typescript": "^3.7.3"
     },
     "peerDependencies": {
-        "@sap/hdbext": "~6.2.2"
+        "@sap/hdbext": "^6.2.0"
     }
 }
