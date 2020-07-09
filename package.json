@@ -43,6 +43,6 @@
         "typescript": "^3.7.3"
     },
     "peerDependencies": {
-        "@sap/hdbext": "^4.7.0"
+        "@sap/hdbext": "~6.2.2"
     }
 }
