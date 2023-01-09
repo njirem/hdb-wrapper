@@ -37,7 +37,7 @@
         "@types/jest": "^24.0.23",
         "@types/luxon": "^1.21.0",
         "jest": "^24.9.0",
-        "luxon": "^1.21.3",
+        "luxon": "^2.5.2",
         "ts-jest": "^24.2.0",
         "tslint": "^5.20.1",
         "typescript": "^3.7.3"
